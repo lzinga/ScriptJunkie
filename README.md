@@ -1,4 +1,6 @@
-# ScriptJunkie
+
+# ScriptJunkie [![Build status](https://ci.appveyor.com/api/projects/status/ls9qpbdnn9n4svg4/branch/master?svg=true)](https://ci.appveyor.com/project/lzinga/scriptjunkie/branch/master)
+
 **What is ScriptJunkie?**
 It allows you to run many scripts/executables through one program and check expected exit code results.
 
