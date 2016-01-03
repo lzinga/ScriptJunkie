@@ -7,7 +7,7 @@ It allows you to run many scripts/executables through one program and check expe
 // Will generate a template xml for you to use to generate your own.
 ScriptJunkie.exe /XmlTemplatePath="C:/Temp/Template.xml"
 ```
-
+### Template Xml
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <Setup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -34,6 +34,19 @@ ScriptJunkie.exe /XmlTemplatePath="C:/Temp/Template.xml"
 </Setup>
 ```
 
+### Exit Code Info
+```xml
+      <ExitCodes>
+        <ExitCode Value="0" Message="Files deleted" IsSuccess="true" />
+        <ExitCode Value="1" Message="Files failed to delete" IsSuccess="false" />
+        <ExitCode Value="2" Message="Couldn't find any files" IsSuccess="false" />
+      </ExitCodes>
+```
+
+The above xml allows the program to determine what kind of exit codes are expected. It also determines which ones count as a pass of the program being ran. So in the above program doesn't get an exit code where the `<ExitCode ... IsSuccess="true" / > it will cause ScriptJunkie to exit with exit code 1. If all programs exit with a successfull exit code ScriptJunkie will exit with a 0.
+
+1. The "Value" attribute is the exit code.
+2. The "Message" is displayed in the execution process of ScriptJunkie.
 
 ## Known Issues
 1. As this is still being worked on I haven't tested it with everything so some things might not work properly. If you find a problem please open an issue.
