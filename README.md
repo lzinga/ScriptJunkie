@@ -48,6 +48,10 @@ The above xml allows the program to determine what kind of exit codes are expect
 1. The "Value" attribute is the exit code.
 2. The "Message" is displayed in the execution process of ScriptJunkie.
 
+## Tested File Types
+1. Powershell (.ps1) - Works as expected.
+2. Executable (.exe) - Next to test.
+
 ## Known Issues
 1. As this is still being worked on I haven't tested it with everything so some things might not work properly. If you find a problem please open an issue.
 2. Currently all downloads will time out in 60 seconds and will give feedback every 10 seconds. Tried getting an xml attribute for the DownloadCollection however it wouldn't appear in the xml. How I wanted it to look `<Downloads Timeout="60" RecheckInterval="10">` but couldn't get it to work. So for now it is hard coded.
