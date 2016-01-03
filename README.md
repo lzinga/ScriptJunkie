@@ -10,7 +10,7 @@ It allows you to run many scripts/executables through one program and check expe
 ScriptJunkie.exe /XmlPath="C:/Temp/scripts.xml"
 
 // Will pause ScriptJunkie at the start allowing attachment of debugger.
-ScriptJunkie.exe /Debug"
+ScriptJunkie.exe /Debug
 
 // Will genereate a template xml that ScriptJunkie can accept.
 ScriptJunkie.exe /XmlTemplatePath="C:/Temp/Template.xml"
