@@ -36,4 +36,5 @@ ScriptJunkie.exe /XmlTemplatePath="<Path>"
 
 
 ## Known Issues
-As this is still being worked on I haven't tested it with everything so some things might not work properly. If you find a problem please open an issue.
+1. As this is still being worked on I haven't tested it with everything so some things might not work properly. If you find a problem please open an issue.
+2. Currently all downloads will time out in 60 seconds and will give feedback every 10 seconds. Tried getting an xml attribute for the DownloadCollection however it wouldn't appear in the xml. How I wanted it to look `<Downloads Timeout="60" RecheckInterval="10">` but couldn't get it to work. So for now it is hard coded.
