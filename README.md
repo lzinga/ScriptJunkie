@@ -3,9 +3,9 @@
 It allows you to run many scripts/executables through one program and check expected exit code results.
 
 ## Example XML
-```
+```csharp
 // Will generate a template xml for you to use to generate your own.
-ScriptJunkie.exe /XmlTemplatePath="<Path>"
+ScriptJunkie.exe /XmlTemplatePath="C:/Temp/Template.xml"
 ```
 
 ```xml
