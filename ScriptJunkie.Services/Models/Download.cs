@@ -107,6 +107,17 @@ namespace ScriptJunkie.Services
         }
 
         /// <summary>
+        /// Deletes the file from where it is saved.
+        /// </summary>
+        public void DeleteDownload()
+        {
+            if (File.Exists(this.DestinationPath))
+            {
+                File.Delete(this.DestinationPath);
+            }
+        }
+
+        /// <summary>
         /// Tells the calling thread to wait for the file to finish downloading.
         /// </summary>
         /// <param name="timeout">How long it takes to time out the file download in seconds.</param>
