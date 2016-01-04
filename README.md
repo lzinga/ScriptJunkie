@@ -59,8 +59,13 @@ The above xml allows the program to determine what kind of exit codes are expect
 2. The "Message" is displayed in the execution process of ScriptJunkie.
 
 # Tested File Types
-1. Powershell (.ps1) - Works as expected.
-2. Executable (.exe) - Next to test. (however should work)
+##### Working
+1. ***Powershell (.ps1)*** - Unit Test Verification
+
+##### Need to be tested
+1. ***Executable (.exe)*** - Should be working
+2. ***Archive (.zip/.rar)*** - archives should automatically be unzipped.
+
 
 # Known Issues
 1. As this is still being worked on I haven't tested it with everything so some things might not work properly. If you find a problem please open an issue.
