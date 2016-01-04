@@ -55,9 +55,10 @@ namespace ScriptJunkie.Services
 
         public void Add(BaseService service)
         {
+            // If service manager already contains one with this service.
             if(_services.Any(i => i.GetType() == service.GetType()))
             {
-                throw Utilities.Throw<InvalidOperationException>("Service Manager already contains service \"{0}\"", service.GetType());
+                return;
             }
 
             _services.Add(service);

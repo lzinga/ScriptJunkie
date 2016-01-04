@@ -35,7 +35,7 @@ namespace ScriptJunkie
 
         #region Public Methods
         /// <summary>
-        /// Initialize setup.
+        /// Initialize setup with the xml file.
         /// </summary>
         /// <param name="xmlFile">The xml file to load</param>
         /// <returns>Pass or Fail</returns>
@@ -59,6 +59,20 @@ namespace ScriptJunkie
             this.Downloads = result.Downloads;
             this.Scripts = result.Scripts;
 
+            // Write Details.
+            ServiceManager.Services.LogService.WriteSubHeader("Details");
+            ServiceManager.Services.LogService.WriteLine("\"{0}\" File(s) to download.", Downloads.Count);
+            ServiceManager.Services.LogService.WriteLine("\"{0}\" Script(s) to execute.", Scripts.Count);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Initializes setup from a base setup object.
+        /// </summary>
+        /// <returns></returns>
+        public bool Initalize()
+        {
             // Write Details.
             ServiceManager.Services.LogService.WriteSubHeader("Details");
             ServiceManager.Services.LogService.WriteLine("\"{0}\" File(s) to download.", Downloads.Count);
@@ -100,11 +114,11 @@ namespace ScriptJunkie
             // If any of the scripts came back with a failure.
             if(this.Scripts.Any(i => !i.Results.IsSuccess))
             {
-                ServiceManager.Services.LogService.WriteLine("Exit {0}", 1);
+                ServiceManager.Services.LogService.WriteLine("Exit 1");
                 return 1;
             }
 
-            ServiceManager.Services.LogService.WriteLine("Exit {0}", 0);
+            ServiceManager.Services.LogService.WriteLine("Exit 0");
             return 0;
         }
 

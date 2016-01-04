@@ -57,10 +57,14 @@ namespace ScriptJunkie.Services
         private string GetArgumentString()
         {
             StringBuilder builder = new StringBuilder();
-            foreach(Argument arg in Arguments)
+
+            if(this.Arguments != null)
             {
-                builder.Append(" ");
-                builder.Append(arg.BuildArgument());
+                foreach (Argument arg in Arguments)
+                {
+                    builder.Append(" ");
+                    builder.Append(arg.BuildArgument());
+                }
             }
 
             return builder.ToString();
@@ -86,7 +90,8 @@ namespace ScriptJunkie.Services
             {
                 case ".ps1":
                     proc.StartInfo.FileName = "powershell.exe";
-                    proc.StartInfo.Arguments = string.Format("-executionpolicy unrestricted \"{0}\" {1}; exit $LASTEXITCODE", this.Executable.Path, this.GetArgumentString());
+                    proc.StartInfo.WorkingDirectory = info.Directory.FullName;
+                    proc.StartInfo.Arguments = string.Format("-executionpolicy unrestricted .\\{0} {1}; exit $LASTEXITCODE", info.Name, this.GetArgumentString());
                     break;
                 default:
                     proc.StartInfo.FileName = CommandPrompt;
