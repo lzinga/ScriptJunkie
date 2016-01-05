@@ -4,8 +4,7 @@
 **What is ScriptJunkie?**
 It allows you to run many scripts/executables through one program and check expected exit code results.
 
-## Usage
-
+# Usage
 
 ```csharp
 // Will run ScriptJunkie against the scripts.xml file.
@@ -18,8 +17,7 @@ ScriptJunkie.exe /Debug
 ScriptJunkie.exe /XmlTemplatePath="C:/Temp/Template.xml"
 ```
 
-# Example XML
-### Template Xml
+# Template Xml
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <Setup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -46,7 +44,7 @@ ScriptJunkie.exe /XmlTemplatePath="C:/Temp/Template.xml"
 </Setup>
 ```
 
-### Exit Code Info
+##### Exit Code Info
 ```xml
 <ExitCodes>
   <ExitCode Value="0" Message="Files deleted" IsSuccess="true" />
@@ -61,8 +59,16 @@ The above xml allows the program to determine what kind of exit codes are expect
 2. The "Message" is displayed in the execution process of ScriptJunkie.
 
 # Tested File Types
-1. Powershell (.ps1) - Works as expected.
-2. Executable (.exe) - Next to test.
+##### Downloads
+All files should download correctly as long as the url is a direct link to the file.
+
+##### Execution File Type
+1. ***Powershell (.ps1)*** - Unit Test Verification
+
+##### Not Implemented
+1. ***Executable (.exe)*** - However it should work fine, just hasn't been tested.
+2. ***Archive (.zip/.rar)***
+
 
 # Known Issues
 1. As this is still being worked on I haven't tested it with everything so some things might not work properly. If you find a problem please open an issue.
