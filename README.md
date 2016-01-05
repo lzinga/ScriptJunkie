@@ -23,7 +23,7 @@ ScriptJunkie.exe /XmlTemplatePath="C:/Temp/Template.xml"
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <Setup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Downloads>
+ <Downloads TimeOut="60" RefreshRate="10">
     <Download Name="Nothing Powershell Script" Description="This script does nothing">
       <DownloadUrl>www.blank.com/nothing.ps1</DownloadUrl>
       <DestinationPath>C:/Temp/Downloads/nothing.ps1</DestinationPath>
@@ -66,4 +66,3 @@ The above xml allows the program to determine what kind of exit codes are expect
 
 # Known Issues
 1. As this is still being worked on I haven't tested it with everything so some things might not work properly. If you find a problem please open an issue.
-2. Currently all downloads will time out in 60 seconds and will give feedback every 10 seconds. Tried getting an xml attribute for the DownloadCollection however it wouldn't appear in the xml. How I wanted it to look `<Downloads Timeout="60" RecheckInterval="10">` but couldn't get it to work. So for now it is hard coded.

@@ -194,6 +194,8 @@ namespace ScriptJunkie
 
             ServiceManager.Services.LogService.WriteLine("Generating Download Collection...");
             DownloadCollection downloadCollection = new DownloadCollection();
+            downloadCollection.TimeOut = 60;
+            downloadCollection.RefreshRate = 10;
             downloadCollection.Add(new Download() { Name = "Nothing Powershell Script", Description = "This script does nothing", DownloadUrl = "www.blank.com/nothing.ps1", DestinationPath = "C:/Temp/Downloads/nothing.ps1" });
 
             // Add the 2 main elements, the scripts to run and the downloads to download.

@@ -58,7 +58,7 @@ namespace ScriptJunkie.Services
             // If service manager already contains one with this service.
             if(_services.Any(i => i.GetType() == service.GetType()))
             {
-                return;
+                throw Utilities.Throw<InvalidOperationException>("ServiceManager already contains type of\"{0}\"", service.GetType());
             }
 
             _services.Add(service);

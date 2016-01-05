@@ -15,8 +15,8 @@ namespace ScriptJunkie.Test
             return string.Format("{0}\\Scripts\\{1}", AppDomain.CurrentDomain.BaseDirectory, script);
         }
 
-        [TestInitialize]
-        public void Initialize()
+        [ClassInitialize]
+        public static void Initialize(TestContext context)
         {
             // Add logging service.
             ServiceManager.Services.Add(new LogService());
@@ -134,6 +134,11 @@ namespace ScriptJunkie.Test
             Assert.IsTrue(exitCode == 1);
         }
 
+
+        /// <summary>
+        /// One script passes and one fails.
+        /// Setup exit code should be 1 ( error ).
+        /// </summary>
         [TestMethod]
         public void PowershellScript_Both()
         {

@@ -75,7 +75,7 @@ namespace ScriptJunkie.Services
         /// Downloads the file from the DownloadUrl.
         /// </summary>
         /// <param name="timeOutEnabled">If WaitWithTimeout should be called with downloading the file.</param>
-        public bool TryDownloadFile(out Exception ex, int timeout, int recheckRate)
+        public bool TryDownloadFile(out Exception ex, int timeout, int refreshRate)
         {
             _isDownloading = true;
             using (_client = new WebClient())
@@ -92,7 +92,7 @@ namespace ScriptJunkie.Services
                 _client.DownloadFileAsync(new Uri(this.DownloadUrl), this.DestinationPath);
             }
 
-            this.Wait(timeout, recheckRate);
+            this.Wait(timeout, refreshRate);
             ex = _exception;
 
             if(ex == null)
@@ -121,8 +121,8 @@ namespace ScriptJunkie.Services
         /// Tells the calling thread to wait for the file to finish downloading.
         /// </summary>
         /// <param name="timeout">How long it takes to time out the file download in seconds.</param>
-        /// <param name="reCheckInterval">Every x seconds it will show notice it is still downloading.</param>
-        public void Wait(int timeout = 60, int reCheckInterval = 10)
+        /// <param name="refreshRate">Every x seconds it will show notice it is still downloading.</param>
+        public void Wait(int timeout = 60, int refreshRate = 10)
         {
             // Make sure this is only called once.
             if (_timeOutCalled)
@@ -146,7 +146,7 @@ namespace ScriptJunkie.Services
                     break;
                 }
 
-                if(watch.Elapsed.TotalSeconds % reCheckInterval == 0)
+                if(watch.Elapsed.TotalSeconds % refreshRate == 0)
                 {
                     ServiceManager.Services.LogService.WriteLine("\"{0}\" is still downloading... ({1}/{2}) - {3}%",
                         this.Name, _bytesReceived.ToFileSize(), _totalBytesToReceive.ToFileSize(), _progressPercent);
