@@ -5,6 +5,7 @@
 It allows you to run many scripts/executables through one program and check expected exit code results.
 
 # Usage
+*Notice* If any scripts ````Excutable```` item requires administrator rights to execute, run ScriptJunkie as an administrator.
 
 ```csharp
 // Will run ScriptJunkie against the scripts.xml file.
