@@ -68,12 +68,13 @@ namespace ScriptJunkie.Services
             proc.StartInfo.UseShellExecute = false;
             FileInfo info = new FileInfo(this.Executable.Path);
 
+            string arguments = this.Arguments == null ? string.Empty : this.Arguments.ToString();
             switch (info.Extension)
             {
                 case ".ps1":
                     proc.StartInfo.FileName = "powershell.exe";
                     proc.StartInfo.WorkingDirectory = info.Directory.FullName;
-                    proc.StartInfo.Arguments = string.Format("-executionpolicy unrestricted .\\{0} {1}; exit $LASTEXITCODE", info.Name, this.Arguments.ToString());
+                    proc.StartInfo.Arguments = string.Format("-executionpolicy unrestricted .\\{0} {1}; exit $LASTEXITCODE", info.Name, arguments);
                     break;
                 default:
                     proc.StartInfo.FileName = this.Executable.Path;
@@ -83,7 +84,7 @@ namespace ScriptJunkie.Services
 
             fullCommand = string.Format("{0} {1}", proc.StartInfo.FileName, proc.StartInfo.Arguments);
             ServiceManager.Services.LogService.WriteSubHeader("Running \"{0}\".", this.Name);
-            ServiceManager.Services.LogService.WriteLine("Command: {0} {1}".Trim(), this.Executable.Path, this.Arguments.ToString());
+            ServiceManager.Services.LogService.WriteLine("Command: {0} {1}".Trim(), this.Executable.Path, arguments);
 
             proc.Start();
             string output = proc.StandardOutput.ReadToEnd();
