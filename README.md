@@ -5,8 +5,6 @@
 It allows you to run many scripts/executables through one program and check expected exit code results.
 
 # Usage
-*Notice* If any scripts ````Excutable```` item requires administrator rights to execute, run ScriptJunkie as an administrator.
-
 ```csharp
 // Will run ScriptJunkie against the scripts.xml file.
 ScriptJunkie.exe /XmlPath="C:/Temp/scripts.xml"
@@ -65,10 +63,10 @@ All files should download correctly as long as the url is a direct link to the f
 
 ##### Execution File Type
 1. ***Powershell (.ps1)*** - Unit Test Verification
+2. ***Executable (.exe)*** - If requires admin privileges run ScriptJunkie as administrator.
 
 ##### Not Implemented
-1. ***Executable (.exe)*** - However it should work fine, just hasn't been tested.
-2. ***Archive (.zip/.rar)***
+1. ***Archive (.zip/.rar)***
 
 
 # Known Issues
