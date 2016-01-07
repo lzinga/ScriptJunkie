@@ -15,8 +15,13 @@ namespace ScriptJunkie.Services
         [XmlAttribute]
         public string Value { get; set; }
 
-        public string BuildArgument()
+        public override string ToString()
         {
+            if (string.IsNullOrEmpty(Value))
+            {
+                return string.Format("{0}", this.Key);
+            }
+
             return string.Format("{0} '{1}'", this.Key, this.Value);
         }
 

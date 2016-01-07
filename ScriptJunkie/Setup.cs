@@ -61,7 +61,7 @@ namespace ScriptJunkie
 
             // Write Details.
             ServiceManager.Services.LogService.WriteSubHeader("Details");
-            ServiceManager.Services.LogService.WriteLine("\"{0}\" File(s) to download.", Downloads.Count);
+            ServiceManager.Services.LogService.WriteLine("\"{0}\" File(s) to download.", Downloads == null ? 0 : Downloads.Count);
             ServiceManager.Services.LogService.WriteLine("\"{0}\" Script(s) to execute.", Scripts.Count);
 
             return true;
@@ -87,27 +87,45 @@ namespace ScriptJunkie
         /// <returns>Exit Code</returns>
         public int Execute()
         {
+
             ServiceManager.Services.LogService.WriteSubHeader("Downloading Files");
-            Downloads.DownloadAllFiles();
-            if(Downloads.Count > 0)
+            if(Downloads != null)
             {
-                ServiceManager.Services.LogService.WriteSubHeader("All Downloads Complete");
+                Downloads.DownloadAllFiles();
+                if (Downloads.Count > 0)
+                {
+                    ServiceManager.Services.LogService.WriteSubHeader("All Downloads Complete");
+                }
+                else
+                {
+                    ServiceManager.Services.LogService.WriteLine("No downloads required.");
+                }
             }
             else
             {
                 ServiceManager.Services.LogService.WriteLine("No downloads required.");
             }
 
+
             ServiceManager.Services.LogService.WriteHeader("Executing Scripts");
-            Scripts.Execute();
-            if (Scripts.Count > 0)
+
+            if(Scripts != null)
             {
-                ServiceManager.Services.LogService.WriteSubHeader("All scripts complete");
+                Scripts.Execute();
+                if (Scripts.Count > 0)
+                {
+                    ServiceManager.Services.LogService.WriteSubHeader("All scripts complete");
+                }
+                else
+                {
+                    ServiceManager.Services.LogService.WriteLine("No scripts found.");
+                }
             }
             else
             {
                 ServiceManager.Services.LogService.WriteLine("No scripts found.");
             }
+
 
             ServiceManager.Services.LogService.WriteHeader("Determining Script Junkie Exit Code");
 

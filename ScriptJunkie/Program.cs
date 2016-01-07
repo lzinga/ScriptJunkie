@@ -29,14 +29,14 @@ namespace ScriptJunkie
             // Arguments passed through args variable over power below arguments.
 #if (DEBUG)
             // Example of programatically added arguments.
-            //ServiceManager.Services.ArgumentService.AddArgument(ArgumentService.XmlPath, @"C:\Users\Lucas\Desktop\TestScripts\Template.xml");
+            ServiceManager.Services.ArgumentService.AddArgument(ArgumentService.XmlPath, @"C:\Users\Lucas\Desktop\TestScripts\Setup.xml");
             //ServiceManager.Services.ArgumentService.AddArgument(ArgumentService.XmlTemplatePath, @"C:\Users\Lucas\Desktop\TestScripts\Template.xml");
 #endif
 
             // Start Script Junkie.
             Version version = Assembly.GetEntryAssembly().GetName().Version;
             ServiceManager.Services.LogService.WriteHeader("Starting Script Junkie v({0})", version.ToString());
-
+            ServiceManager.Services.LogService.WriteLine("If executable of script needs to be ran as administrator, run ScriptJunkie as admin.", ConsoleColor.Yellow);
             // Check if debug mode.
             if (ServiceManager.Services.ArgumentService.IsDebug)
             {

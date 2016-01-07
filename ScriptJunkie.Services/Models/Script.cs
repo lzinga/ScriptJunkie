@@ -53,24 +53,6 @@ namespace ScriptJunkie.Services
         public ExitCodeCollection ExitCodes;
         #endregion
 
-        #region Private Methods
-        private string GetArgumentString()
-        {
-            StringBuilder builder = new StringBuilder();
-
-            if(this.Arguments != null)
-            {
-                foreach (Argument arg in Arguments)
-                {
-                    builder.Append(" ");
-                    builder.Append(arg.BuildArgument());
-                }
-            }
-
-            return builder.ToString();
-        }
-        #endregion
-
         #region Public Methods
         /// <summary>
         /// Executes the script.
@@ -91,17 +73,17 @@ namespace ScriptJunkie.Services
                 case ".ps1":
                     proc.StartInfo.FileName = "powershell.exe";
                     proc.StartInfo.WorkingDirectory = info.Directory.FullName;
-                    proc.StartInfo.Arguments = string.Format("-executionpolicy unrestricted .\\{0} {1}; exit $LASTEXITCODE", info.Name, this.GetArgumentString());
+                    proc.StartInfo.Arguments = string.Format("-executionpolicy unrestricted .\\{0} {1}; exit $LASTEXITCODE", info.Name, this.Arguments.ToString());
                     break;
                 default:
-                    proc.StartInfo.FileName = CommandPrompt;
-                    proc.StartInfo.Arguments = string.Format("'{0}' {1}", this.Executable.Path, this.GetArgumentString());
+                    proc.StartInfo.FileName = this.Executable.Path;
+                    proc.StartInfo.Arguments = string.Format("{0}", this.Arguments.ToString());
                     break;
             }
 
             fullCommand = string.Format("{0} {1}", proc.StartInfo.FileName, proc.StartInfo.Arguments);
             ServiceManager.Services.LogService.WriteSubHeader("Running \"{0}\".", this.Name);
-            ServiceManager.Services.LogService.WriteLine("Command: {0} {1}".Trim(), this.Executable.Path, this.GetArgumentString());
+            ServiceManager.Services.LogService.WriteLine("Command: {0} {1}".Trim(), this.Executable.Path, this.Arguments.ToString());
 
             proc.Start();
             string output = proc.StandardOutput.ReadToEnd();

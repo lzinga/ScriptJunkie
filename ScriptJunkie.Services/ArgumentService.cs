@@ -52,11 +52,27 @@ namespace ScriptJunkie.Services
 
         public void AddArgument(string key, string value)
         {
+            Argument exists = this.Arguments.SingleOrDefault(i => string.Equals(i.Key, key, StringComparison.OrdinalIgnoreCase));
+            if (exists != null)
+            {
+                // An argument with that key already exists.
+                this.Arguments.Remove(exists);
+            }
+
+            // Add the one from command line.
             this.Arguments.Add(new Argument() { Key = key, Value = value });
         }
 
         public void AddArgument(string key)
         {
+            Argument exists = this.Arguments.SingleOrDefault(i => string.Equals(i.Key, key, StringComparison.OrdinalIgnoreCase));
+            if (exists != null)
+            {
+                // An argument with that key already exists.
+                this.Arguments.Remove(exists);
+            }
+
+            // Add the one from command line.
             this.Arguments.Add(new Argument() { Key = key, Value = "" });
         }
 
