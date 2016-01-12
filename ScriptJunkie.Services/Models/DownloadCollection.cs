@@ -9,6 +9,8 @@ using System.Collections.ObjectModel;
 using ScriptJunkie.Services;
 using System.Xml;
 using System.Xml.Schema;
+using System.IO;
+using System.Xml.XPath;
 
 namespace ScriptJunkie.Services
 {
@@ -69,7 +71,6 @@ namespace ScriptJunkie.Services
             }
         }
 
-
         /// <summary>
         /// Gets all downloads that have timed out.
         /// </summary>
@@ -87,30 +88,32 @@ namespace ScriptJunkie.Services
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
             base.Clear();
-            XmlReader subR = reader.ReadSubtree();
-
-            int timeout = 60;
+            
+            int timeout = 0;
             if(int.TryParse(reader["TimeOut"], out timeout))
             {
                 _timeout = timeout;
             }
 
-            int refreshRate = 10;
+            int refreshRate = 0;
             if (int.TryParse(reader["RefreshRate"], out timeout))
             {
                 _refreshRate = refreshRate;
             }
 
-            
-            reader.MoveToContent();
+            reader.MoveToContent(); 
+            XPathNavigator n = new XPathDocument(reader.ReadSubtree()).CreateNavigator();
+            XPathNodeIterator nodes = n.Select("//Download");
+            XmlSerializer x = new XmlSerializer(typeof(Download));
 
-            while (subR.ReadToFollowing("Download"))
+            while (nodes.MoveNext())
             {
-                XmlSerializer x = new XmlSerializer(typeof(Download));
-                object o = x.Deserialize(subR);
-                if (o is Download) base.Add((Download)o);
+                using (TextReader stream = new StringReader(nodes.Current.OuterXml))
+                {
+                    object o = x.Deserialize(stream);
+                    if (o is Download) base.Add((Download)o);
+                }
             }
-
         }
 
         void IXmlSerializable.WriteXml(XmlWriter writer)
@@ -127,11 +130,15 @@ namespace ScriptJunkie.Services
 
                     writer.WriteElementString("DownloadUrl", download.DownloadUrl);
                     writer.WriteElementString("DestinationPath", download.DestinationPath);
+
+                    if (!string.IsNullOrEmpty(download.ExtractionPath))
+                    {
+                        writer.WriteElementString("ExtractionPath", download.ExtractionPath);
+                    }
+                    
                 }
                 writer.WriteEndElement();
             }
-
-
         }
     }
 }

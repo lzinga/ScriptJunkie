@@ -87,7 +87,7 @@ namespace ScriptJunkie
         /// <returns>Exit Code</returns>
         public int Execute()
         {
-
+            // Download all files.
             ServiceManager.Services.LogService.WriteSubHeader("Downloading Files");
             if(Downloads != null)
             {
@@ -106,14 +106,13 @@ namespace ScriptJunkie
                 ServiceManager.Services.LogService.WriteLine("No downloads required.");
             }
 
-
+            // Execute all scripts.
             ServiceManager.Services.LogService.WriteHeader("Executing Scripts");
-
             if(Scripts != null)
             {
-                Scripts.Execute();
                 if (Scripts.Count > 0)
                 {
+                    Scripts.Execute();
                     ServiceManager.Services.LogService.WriteSubHeader("All scripts complete");
                 }
                 else
@@ -126,10 +125,8 @@ namespace ScriptJunkie
                 ServiceManager.Services.LogService.WriteLine("No scripts found.");
             }
 
-
+            // Check script junkie exit code.
             ServiceManager.Services.LogService.WriteHeader("Determining Script Junkie Exit Code");
-
-            // If any of the scripts came back with a failure.
             if(this.Scripts.Any(i => !i.Results.IsSuccess))
             {
                 ServiceManager.Services.LogService.WriteLine("Exit 1");
@@ -147,10 +144,10 @@ namespace ScriptJunkie
         /// <returns></returns>
         public Setup Deserialize(string path)
         {
-            XmlSerializer serializer = new XmlSerializer(this.GetType());
+            XmlSerializer serializer = new XmlSerializer(typeof(Setup));
             Setup collection;
 
-            using (Stream reader = new FileStream(path, FileMode.Open))
+            using (FileStream reader = new FileStream(path, FileMode.Open))
             {
                 collection = serializer.Deserialize(reader) as Setup;
             }
@@ -164,6 +161,11 @@ namespace ScriptJunkie
         /// <param name="path"></param>
         public void Serialize(string path)
         {
+            FileInfo pathInfo = new FileInfo(path);
+            if (!Directory.Exists(pathInfo.DirectoryName))
+            {
+                Directory.CreateDirectory(pathInfo.DirectoryName);
+            }
             using (System.IO.StreamWriter writer = new System.IO.StreamWriter(path))
             {
                 System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(this.GetType());
@@ -180,21 +182,18 @@ namespace ScriptJunkie
         {
             ServiceManager.Services.LogService.WriteHeader("Generating Xml Template...");
 
-            ServiceManager.Services.LogService.WriteLine("Generating Script Element...");
+            #region Script 1
             Script script = new Script();
             script.Name = "Script 1";
             script.Description = "Does nothing";
 
-            ServiceManager.Services.LogService.WriteLine("Generating Executable Element...");
             Executable executable = new Executable();
             executable.Path = "C:/Temp/nothing.ps1";
 
-            ServiceManager.Services.LogService.WriteLine("Generating Argument Collection...");
             ArgumentCollection argCollection = new ArgumentCollection();
             argCollection.Add(new Argument() { Key = "-i", Value = "C:/Temp/something.bin" });
             argCollection.Add(new Argument() { Key = "-x", Value = "" });
 
-            ServiceManager.Services.LogService.WriteLine("Generating Exit Collection...");
             ExitCodeCollection exitCollection = new ExitCodeCollection();
             exitCollection.Add(new ExitCode() { Value = 0, Message = "Files deleted", IsSuccess = true });
             exitCollection.Add(new ExitCode() { Value = 1, Message = "Files failed to delete" });
@@ -204,17 +203,42 @@ namespace ScriptJunkie
             script.Arguments = argCollection;
             script.ExitCodes = exitCollection;
             script.Executable = executable;
+            #endregion
+
+            #region Script 2
+            Script script2 = new Script();
+            script2.Name = "Script 2";
+            script2.Description = "Does nothing";
+
+            Executable executable2 = new Executable();
+            executable2.Path = "C:/Temp/Downloads/Extracted/SomethingThatWasInAZip.exe";
+
+            ArgumentCollection argCollection2 = new ArgumentCollection();
+            argCollection2.Add(new Argument() { Key = "-install"});
+            argCollection2.Add(new Argument() { Key = "-silent" });
+
+            ExitCodeCollection exitCollection2 = new ExitCodeCollection();
+            exitCollection2.Add(new ExitCode() { Value = 0, Message = "Script 2 has installed", IsSuccess = true });
+            exitCollection2.Add(new ExitCode() { Value = 1, Message = "Failed to install." });
+            exitCollection2.Add(new ExitCode() { Value = 2, Message = "Installed but limited." });
+
+            // Add all elements into the single script file.
+            script2.Arguments = argCollection;
+            script2.ExitCodes = exitCollection;
+            script2.Executable = executable;
 
             // Add the single script above into a collection of scripts.
-            ServiceManager.Services.LogService.WriteLine("Generating Script Collection...");
             ScriptCollection scriptCollection = new ScriptCollection();
             scriptCollection.Add(script);
+            scriptCollection.Add(script2);
+            #endregion
 
             ServiceManager.Services.LogService.WriteLine("Generating Download Collection...");
             DownloadCollection downloadCollection = new DownloadCollection();
             downloadCollection.TimeOut = 60;
             downloadCollection.RefreshRate = 10;
             downloadCollection.Add(new Download() { Name = "Nothing Powershell Script", Description = "This script does nothing", DownloadUrl = "www.blank.com/nothing.ps1", DestinationPath = "C:/Temp/Downloads/nothing.ps1" });
+            downloadCollection.Add(new Download() { Name = "Test Zip File", Description = "This zip has nothing", DownloadUrl = "www.blank.com/nothing.zip", DestinationPath = "C:/Temp/Downloads", ExtractionPath = "C:/Temp/Downloads/Extracted" });
 
             // Add the 2 main elements, the scripts to run and the downloads to download.
             Setup setup = new Setup();

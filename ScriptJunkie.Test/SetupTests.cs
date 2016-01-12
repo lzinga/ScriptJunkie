@@ -15,11 +15,27 @@ namespace ScriptJunkie.Test
             return string.Format("{0}\\Scripts\\{1}", AppDomain.CurrentDomain.BaseDirectory, script);
         }
 
+        private string GetScriptXml(string script)
+        {
+            return string.Format("{0}\\SetupTests\\{1}", AppDomain.CurrentDomain.BaseDirectory, script);
+        }
+
         [ClassInitialize]
         public static void Initialize(TestContext context)
         {
             // Add logging service.
             ServiceManager.Services.Add(new LogService());
+        }
+
+        /// <summary>
+        /// Expects to get 2 downloads and 2 script options.
+        /// </summary>
+        [TestMethod]
+        public void XmlReadTest()
+        {
+            Setup setup = new Setup();
+            setup.Initalize(GetScriptXml("DownloadAndScriptCount.xml"));
+            Assert.IsTrue(setup.Scripts.Count == 2 && setup.Downloads.Count == 2);
         }
 
         [TestMethod]

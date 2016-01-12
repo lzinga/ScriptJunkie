@@ -9,6 +9,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.IO.Compression;
 
 namespace ScriptJunkie.Services
 {
@@ -42,6 +43,11 @@ namespace ScriptJunkie.Services
         /// The path the file will be downloaded to.
         /// </summary>
         public string DestinationPath { get; set; }
+
+        /// <summary>
+        /// If download is a zip extract it to this path.
+        /// </summary>
+        public string ExtractionPath { get; set; }
 
         /// <summary>
         /// If the file is currently in the state of downloading.
@@ -89,7 +95,16 @@ namespace ScriptJunkie.Services
 
                 _client.DownloadProgressChanged += Client_DownloadProgressChanged;
                 _client.DownloadFileCompleted += Client_DownloadFileCompleted;
-                _client.DownloadFileAsync(new Uri(this.DownloadUrl), this.DestinationPath);
+                try
+                {
+                    _client.DownloadFileAsync(new Uri(this.DownloadUrl), this.DestinationPath);
+                }
+                catch (UriFormatException e)
+                {
+                    ex = e;
+                    return false;
+                }
+                
             }
 
             this.Wait(timeout, refreshRate);
@@ -158,6 +173,29 @@ namespace ScriptJunkie.Services
         }
         #endregion
 
+        #region Private Methods
+        /// <summary>
+        /// Will try to extract the zip to ExtractionPath if it exists.
+        /// </summary>
+        private void ExtractZip()
+        {
+            // If it is a zip file try to extract to destination path.
+            FileInfo file = new FileInfo(this.DestinationPath);
+            if (file.Extension == ".zip")
+            {
+                ServiceManager.Services.LogService.WriteLine("Trying to unzip the zip file.");
+
+                if (string.IsNullOrEmpty(this.ExtractionPath))
+                {
+                    ServiceManager.Services.LogService.WriteLine("Extraction Path empty, skipping extraction.", ConsoleColor.Yellow);
+                    return;
+                }
+
+                ZipFile.ExtractToDirectory(this.DestinationPath, this.ExtractionPath);
+            }
+        }
+        #endregion
+
         #region Private Events
         /// <summary>
         /// When the file is done downloading.
@@ -176,6 +214,8 @@ namespace ScriptJunkie.Services
                         File.Delete(this.DestinationPath);
                     }
                 }
+
+                ExtractZip();
 
                 if (this.DownloadCompleted != null)
                 {

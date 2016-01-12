@@ -29,8 +29,8 @@ namespace ScriptJunkie
             // Arguments passed through args variable over power below arguments.
 #if (DEBUG)
             // Example of programatically added arguments.
-            ServiceManager.Services.ArgumentService.AddArgument(ArgumentService.XmlPath, @"C:\Users\Lucas\Desktop\TestScripts\Setup.xml");
-            //ServiceManager.Services.ArgumentService.AddArgument(ArgumentService.XmlTemplatePath, @"C:\Users\Lucas\Desktop\TestScripts\Template.xml");
+            //ServiceManager.Services.ArgumentService.AddArgument(ArgumentService.XmlTemplatePath, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\ScriptJunkie\\Template.xml");
+            ServiceManager.Services.ArgumentService.AddArgument(ArgumentService.XmlPath, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\ScriptJunkie\\Template.xml");
 #endif
 
             // Start Script Junkie.

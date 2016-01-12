@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Setup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Downloads TimeOut="60" RefreshRate="10">
+    <Download Name="Nothing Powershell Script" Description="This script does nothing">
+      <DownloadUrl>www.blank.com/nothing.ps1</DownloadUrl>
+      <DestinationPath>C:/Temp/Downloads/nothing.ps1</DestinationPath>
+    </Download>
+    <Download Name="Test Zip File" Description="This zip has nothing">
+      <DownloadUrl>www.blank.com/nothing.zip</DownloadUrl>
+      <DestinationPath>C:/Temp/Downloads</DestinationPath>
+      <ExtractionPath>C:/Temp/Downloads/Extracted</ExtractionPath>
+    </Download>
+  </Downloads>
+  <Scripts TimeOut="60" RefreshRate="10">
+    <Script Name="Script 1" Description="Does nothing">
+      <Executable Path="C:/Temp/nothing.ps1" />
+      <Arguments>
+        <Argument Key="-i" Value="C:/Temp/something.bin" />
+        <Argument Key="-x" Value="" />
+      </Arguments>
+      <ExitCodes>
+        <ExitCode Value="0" Message="Files deleted" IsSuccess="true" />
+        <ExitCode Value="1" Message="Files failed to delete" IsSuccess="false" />
+        <ExitCode Value="2" Message="Couldn't find any files" IsSuccess="false" />
+      </ExitCodes>
+    </Script>
+    <Script Name="Script 2" Description="Does nothing">
+      <Executable Path="C:/Temp/nothing.ps1" />
+      <Arguments>
+        <Argument Key="-i" Value="C:/Temp/something.bin" />
+        <Argument Key="-x" Value="" />
+      </Arguments>
+      <ExitCodes>
+        <ExitCode Value="0" Message="Files deleted" IsSuccess="true" />
+        <ExitCode Value="1" Message="Files failed to delete" IsSuccess="false" />
+        <ExitCode Value="2" Message="Couldn't find any files" IsSuccess="false" />
+      </ExitCodes>
+    </Script>
+  </Scripts>
+</Setup>

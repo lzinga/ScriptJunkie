@@ -10,6 +10,7 @@ using System.Xml.Serialization;
 
 namespace ScriptJunkie.Services
 {
+    [Serializable]
     public class Script
     {
         #region Private Constant Fields
@@ -58,8 +59,17 @@ namespace ScriptJunkie.Services
         /// Executes the script.
         /// </summary>
         /// <returns>ScriptResult</returns>
-        public ScriptResult Execute()
+        public ScriptResult Execute(int timeout = 60, int refreshRate = 10)
         {
+            ScriptResult result = new ScriptResult();
+
+            // If the file to be executed doesn't exist skip.
+            if (!File.Exists(this.Executable.Path))
+            {
+                ServiceManager.Services.LogService.WriteSubHeader("Skipping \"{0}\" cannot find \"{1}\".", this.Name, this.Executable.Path);
+            }
+
+
             string fullCommand = "";
             Process proc = new Process();
             proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
@@ -89,14 +99,29 @@ namespace ScriptJunkie.Services
             proc.Start();
             string output = proc.StandardOutput.ReadToEnd();
 
-            while (!proc.HasExited)
+            TimeSpan waitTime = new TimeSpan(0, 0, 0, timeout);
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            // Wait for process exit.
+            while (!proc.WaitForExit(timeout * 1000))
             {
-                ServiceManager.Services.LogService.WriteLine("Process hasn't exited.");
+                // The max wait time has occurred, break out and stop process.
+                if (watch.Elapsed > waitTime)
+                {
+                    result.TimedOut = true;
+                    proc.Close();
+                    break;
+                }
+
+                if (watch.Elapsed.TotalSeconds % refreshRate == 0)
+                {
+                    ServiceManager.Services.LogService.WriteLine("\"{0}\" is still running...",
+                        this.Name);
+                }
             }
 
-            // For some reason exit code is always 0 ALWAYS. KILL ME!
-
-            ScriptResult result = new ScriptResult();
+            // place exit code and output into the script result.
             result.ExitCode = proc.ExitCode;
             result.Output = output;
 
