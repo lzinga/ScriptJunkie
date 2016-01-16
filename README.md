@@ -25,8 +25,13 @@ ScriptJunkie.exe /XmlTemplatePath="C:/Temp/Template.xml"
       <DownloadUrl>www.blank.com/nothing.ps1</DownloadUrl>
       <DestinationPath>C:/Temp/Downloads/nothing.ps1</DestinationPath>
     </Download>
+    <Download Name="Zip Archive" Description="This script does nothing">
+      <DownloadUrl>www.blank.com/nothing.zip</DownloadUrl>
+      <DestinationPath>C:/Temp/Downloads/nothing.zip</DestinationPath>
+      <ExtractionPath>C:/Temp/Downloads/ExtractedFiles</ExtractionPath>
+    </Download>
   </Downloads>
-  <Scripts>
+  <Scripts TimeOut="60" RefreshRate="10">
     <Script Name="Script 1" Description="Does nothing">
       <Executable Path="C:/Temp/nothing.ps1" />
       <Arguments>
