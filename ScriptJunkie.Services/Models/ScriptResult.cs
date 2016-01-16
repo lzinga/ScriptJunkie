@@ -11,7 +11,7 @@ namespace ScriptJunkie.Services
         /// <summary>
         /// The exit code of the program.
         /// </summary>
-        public int ExitCode { get; set; } = -1;
+        public int? ExitCode { get; set; } = null;
 
         /// <summary>
         /// If the program timed out or not.

@@ -191,7 +191,20 @@ namespace ScriptJunkie.Services
                     return;
                 }
 
-                ZipFile.ExtractToDirectory(this.DestinationPath, this.ExtractionPath);
+                if (!Directory.Exists(this.ExtractionPath))
+                {
+                    Directory.CreateDirectory(this.ExtractionPath);
+                }
+
+                using (ZipArchive zip = ZipFile.OpenRead(this.DestinationPath))
+                {
+                    foreach(ZipArchiveEntry entry in zip.Entries)
+                    {
+                        ServiceManager.Services.LogService.WriteLine("Extracting \"0\"", entry.Name);
+                        entry.ExtractToFile(Path.Combine(this.ExtractionPath, entry.Name), true);
+                    }
+                }
+
             }
         }
         #endregion

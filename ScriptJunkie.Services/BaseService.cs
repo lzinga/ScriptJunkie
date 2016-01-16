@@ -8,6 +8,9 @@ namespace ScriptJunkie.Services
 {
     public class BaseService
     {
+        public virtual void Dispose()
+        {
 
+        }
     }
 }

@@ -2,68 +2,13 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScriptJunkie.Services;
 using ScriptJunkie.Common;
+using System.IO;
 
 namespace ScriptJunkie.Test
 {
     [TestClass]
-    public class SetupTests
+    public class ScriptTests : BaseTest
     {
-        private const string PowershellTest_ScriptFail = "PowershellTest_ScriptFail.ps1";
-
-        private string GetScriptObject(string script)
-        {
-            return string.Format("{0}\\Scripts\\{1}", AppDomain.CurrentDomain.BaseDirectory, script);
-        }
-
-        private string GetScriptXml(string script)
-        {
-            return string.Format("{0}\\SetupTests\\{1}", AppDomain.CurrentDomain.BaseDirectory, script);
-        }
-
-        [ClassInitialize]
-        public static void Initialize(TestContext context)
-        {
-            // Add logging service.
-            ServiceManager.Services.Add(new LogService());
-        }
-
-        /// <summary>
-        /// Expects to get 2 downloads and 2 script options.
-        /// </summary>
-        [TestMethod]
-        public void XmlReadTest()
-        {
-            Setup setup = new Setup();
-            setup.Initalize(GetScriptXml("DownloadAndScriptCount.xml"));
-            Assert.IsTrue(setup.Scripts.Count == 2 && setup.Downloads.Count == 2);
-        }
-
-        [TestMethod]
-        public void DownloadTest()
-        {
-
-            Download download = new Download();
-            
-            // If this download url stops working jut find another.
-            download.DownloadUrl = "http://mirror.internode.on.net/pub/test/10meg.test3";
-            download.DestinationPath = System.IO.Path.GetTempPath() + "/TestFile.test";
-
-            Exception ex;
-            bool passed;
-            if(download.TryDownloadFile(out ex, 60, 10))
-            {
-                passed = true;
-            }
-            else
-            {
-                passed = false;
-            }
-
-            download.DestinationPath = System.IO.Path.GetTempPath() + "/TestFile.test";
-            download.DeleteDownload();
-            Assert.IsTrue(passed, ex != null ? ex.Message : "");
-        }
-
         /// <summary>
         /// Tests if the script result passes.
         /// </summary>
@@ -75,7 +20,7 @@ namespace ScriptJunkie.Test
             script.Name = "Powershell test script.";
 
             // The powershell script.
-            script.Executable = new Executable() { Path = GetScriptObject("PowershellTest_ScriptPass.ps1") };
+            script.Executable = new Executable() { Path = Utilities.GetIncludedFile("Scripts/PowershellTest_ScriptPass.ps1") };
 
             // Exit Codes
             ExitCodeCollection exitCollection = new ExitCodeCollection();
@@ -117,7 +62,7 @@ namespace ScriptJunkie.Test
             script.Name = "Powershell test script.";
 
             // The powershell script.
-            script.Executable = new Executable() { Path = GetScriptObject("PowershellTest_ScriptFail.ps1") };
+            script.Executable = new Executable() { Path = Utilities.GetIncludedFile("Scripts/PowershellTest_ScriptFail.ps1") };
 
             // Exit Codes
             ExitCodeCollection exitCollection = new ExitCodeCollection();
@@ -161,7 +106,7 @@ namespace ScriptJunkie.Test
             #region Script 1
             Script script1 = new Script();
             script1.Name = "Powershell test script 1.";
-            script1.Executable = new Executable() { Path = GetScriptObject("PowershellTest_ScriptPass.ps1") };
+            script1.Executable = new Executable() { Path = Utilities.GetIncludedFile("Scripts/PowershellTest_ScriptPass.ps1") };
 
             // Exit Codes
             ExitCodeCollection exitCollection1 = new ExitCodeCollection();
@@ -175,7 +120,7 @@ namespace ScriptJunkie.Test
             #region Script 2
             Script script2 = new Script();
             script2.Name = "Powershell test script 2.";
-            script2.Executable = new Executable() { Path = GetScriptObject("PowershellTest_ScriptFail.ps1") };
+            script2.Executable = new Executable() { Path = Utilities.GetIncludedFile("Scripts/PowershellTest_ScriptFail.ps1") };
 
             // Exit Codes
             ExitCodeCollection exitCollection2 = new ExitCodeCollection();

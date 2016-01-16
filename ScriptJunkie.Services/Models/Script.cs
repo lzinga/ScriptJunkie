@@ -62,11 +62,12 @@ namespace ScriptJunkie.Services
         public ScriptResult Execute(int timeout = 60, int refreshRate = 10)
         {
             ScriptResult result = new ScriptResult();
-
+            Results = result;
             // If the file to be executed doesn't exist skip.
             if (!File.Exists(this.Executable.Path))
             {
                 ServiceManager.Services.LogService.WriteSubHeader("Skipping \"{0}\" cannot find \"{1}\".", this.Name, this.Executable.Path);
+                return new ScriptResult() { IsSuccess = false, TimedOut = false, Output = "Skipped" };
             }
 
 
@@ -129,7 +130,7 @@ namespace ScriptJunkie.Services
             // and that exit code counts as a pass.
             result.IsSuccess = this.ExitCodes.Any(i => i.Value == result.ExitCode && i.IsSuccess);
 
-            Results = result;
+            
 
             return result;
         }

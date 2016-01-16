@@ -53,7 +53,11 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SetupTests.cs" />
+    <Compile Include="ScriptTests.cs" />
+    <Compile Include="DownloadTests.cs" />
+    <Compile Include="BaseTest.cs" />
+    <Compile Include="XmlTests.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ScriptJunkie.Common\ScriptJunkie.Common.csproj">
@@ -70,13 +74,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Scripts\PowershellTest_ScriptFail.ps1">
+    <Content Include="Include\Scripts\PowershellTest_ScriptFail.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Scripts\PowershellTest_ScriptPass.ps1">
+    <Content Include="Include\Scripts\PowershellTest_ScriptPass.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="SetupTests\DownloadAndScriptCount.xml">
+    <Content Include="Include\SetupXmls\DownloadAndScriptCount.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

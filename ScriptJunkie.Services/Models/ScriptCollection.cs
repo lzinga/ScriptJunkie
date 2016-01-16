@@ -14,11 +14,13 @@ using System.Xml.XPath;
 
 namespace ScriptJunkie.Services
 {
-    public class ScriptCollection : Collection<Script>, IXmlSerializable
+    [Serializable]
+    public class ScriptCollection : IEnumerable<Script>
     {
         private int _timeout = 60;
         private int _refreshRate = 10;
 
+        [XmlAttribute]
         public int TimeOut
         {
             get
@@ -30,6 +32,8 @@ namespace ScriptJunkie.Services
                 _timeout = value;
             }
         }
+
+        [XmlAttribute]
         public int RefreshRate
         {
             get
@@ -42,121 +46,67 @@ namespace ScriptJunkie.Services
             }
         }
 
+        [XmlIgnore]
+        private List<Script> _scripts = new List<Script>();
+
+        [XmlIgnore]
+        public int Count
+        {
+            get
+            {
+                return _scripts.Count;
+            }
+        }
+
+        public Script this[int index]
+        {
+            get
+            {
+                return _scripts[index];
+            }
+        }
+
         /// <summary>
         /// Executes all scripts in the collection.
         /// </summary>
         public void Execute()
         {
-            foreach(Script script in base.Items)
+            foreach(Script script in this._scripts)
             {
                 // Run the script and get the results.
                 ScriptResult result = script.Execute();
-                
-                ExitCode code;
-                if (script.ExitCodes.TryGetExitCode(result.ExitCode, out code))
+
+                // Only check exit code if the exit code has a value.
+                if (result.ExitCode.HasValue)
                 {
-                    ServiceManager.Services.LogService.WriteLine("\"{0}\" says \"{1}\".", script.Name, code.Message, result.ExitCode);
-                    ServiceManager.Services.LogService.WriteLine("Exit Code: {0} ( {1} )", result.ExitCode, result.IsSuccess ? "Passed" : "Failed");
+                    ExitCode code;
+                    if (script.ExitCodes.TryGetExitCode(result.ExitCode.Value, out code))
+                    {
+                        ServiceManager.Services.LogService.WriteLine("\"{0}\" says \"{1}\".", script.Name, code.Message, result.ExitCode);
+                        ServiceManager.Services.LogService.WriteLine("Exit Code: {0} ( {1} )", result.ExitCode, result.IsSuccess ? "Passed" : "Failed");
+                    }
+                    else
+                    {
+                        ServiceManager.Services.LogService.WriteLine("\"{0}\" had no exit code in xml.", script.Name);
+                    }
                 }
-                else
-                {
-                    ServiceManager.Services.LogService.WriteLine("\"{0}\" had no exit code in xml.", script.Name);
-                }
+
             }
         }
 
-        XmlSchema IXmlSerializable.GetSchema()
+        public void Add(Script script)
         {
-            return null;
+            _scripts.Add(script);
         }
 
-        void IXmlSerializable.ReadXml(XmlReader reader)
+        public IEnumerator<Script> GetEnumerator()
         {
-            base.Clear();
-
-            int timeout = 0;
-            if (int.TryParse(reader["TimeOut"], out timeout))
-            {
-                _timeout = timeout;
-            }
-
-            int refreshRate = 0;
-            if (int.TryParse(reader["RefreshRate"], out timeout))
-            {
-                _refreshRate = refreshRate;
-            }
-
-            reader.MoveToContent();
-            XPathNavigator n = new XPathDocument(reader.ReadSubtree()).CreateNavigator();
-            XPathNodeIterator nodes = n.Select("//Script");
-            XmlSerializer x = new XmlSerializer(typeof(Script));
-
-            while (nodes.MoveNext())
-            {
-                using (TextReader stream = new StringReader(nodes.Current.OuterXml))
-                {
-                    object o = x.Deserialize(stream);
-                    if (o is Script) base.Add((Script)o);
-                }
-            }
+            return _scripts.GetEnumerator();
         }
 
-        void IXmlSerializable.WriteXml(XmlWriter writer)
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            // All script TimeOut and RefreshRate
-            writer.WriteAttributeString("TimeOut", _timeout.ToString());
-            writer.WriteAttributeString("RefreshRate", _refreshRate.ToString());
-
-            foreach (Script script in base.Items)
-            {
-                writer.WriteStartElement("Script");
-                {
-                    // Script Attributes
-                    writer.WriteAttributeString("Name", script.Name);
-                    writer.WriteAttributeString("Description", script.Description);
-
-                    // Script Executable
-                    writer.WriteStartElement("Executable");
-                    {
-                        writer.WriteAttributeString("Path", script.Executable.Path);
-                    }
-                    writer.WriteEndElement();
-
-                    // Script Arguments
-                    writer.WriteStartElement("Arguments");
-                    {
-                        foreach (Argument arg in script.Arguments)
-                        {
-                            writer.WriteStartElement("Argument");
-                            {
-                                writer.WriteAttributeString("Key", arg.Key);
-                                writer.WriteAttributeString("Value", arg.Value);
-                            }
-                            writer.WriteEndElement();
-                        }
-                    }
-                    writer.WriteEndElement();
-
-                    // Script ExitCodes
-                    writer.WriteStartElement("ExitCodes");
-                    {
-                        foreach (ExitCode exit in script.ExitCodes)
-                        {
-                            writer.WriteStartElement("ExitCode");
-                            {
-                                writer.WriteAttributeString("Value", exit.Value.ToString());
-                                writer.WriteAttributeString("Message", exit.Message);
-                                writer.WriteAttributeString("IsSuccess", exit.IsSuccess.ToString().ToLower());
-                            }
-                            writer.WriteEndElement();
-                        }
-                    }
-                    writer.WriteEndElement();
-
-
-                }
-                writer.WriteEndElement();
-            }
+            return _scripts.GetEnumerator();
         }
     }
 }

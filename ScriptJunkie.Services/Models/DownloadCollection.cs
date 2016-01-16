@@ -11,14 +11,21 @@ using System.Xml;
 using System.Xml.Schema;
 using System.IO;
 using System.Xml.XPath;
+using System.ComponentModel;
 
 namespace ScriptJunkie.Services
 {
-    public class DownloadCollection : Collection<Download>, IXmlSerializable
+    [Serializable]
+    [XmlRoot("Downloads")]
+    [XmlInclude(typeof(Download))]
+    public class DownloadCollection : IEnumerable<Download>
     {
+        private List<Download> _downloads = new List<Download>();
+
         private int _timeout = 60;
         private int _refreshRate = 10;
 
+        [XmlAttribute(AttributeName = "TimeOut")]
         public int TimeOut
         {
             get
@@ -30,6 +37,8 @@ namespace ScriptJunkie.Services
                 _timeout = value;
             }
         }
+
+        [XmlAttribute(AttributeName = "RefreshRate")]
         public int RefreshRate
         {
             get
@@ -42,12 +51,20 @@ namespace ScriptJunkie.Services
             }
         }
 
+        public int Count
+        {
+            get
+            {
+                return this._downloads.Count;
+            }
+        }
+
         public void DownloadAllFiles()
         {
             ServiceManager.Services.LogService.WriteLine("Downloads will time out in \"{0}\" seconds.", _timeout);
             ServiceManager.Services.LogService.WriteLine("Downloads will update every \"{0}\" seconds.", _refreshRate);
 
-            foreach (Download download in base.Items)
+            foreach (Download download in this._downloads)
             {
                 ServiceManager.Services.LogService.WriteSubHeader("Name: \"{0}\"", download.Name);
                 Exception ex;
@@ -71,74 +88,28 @@ namespace ScriptJunkie.Services
             }
         }
 
+        public void Add(Download download)
+        {
+            this._downloads.Add(download);
+        }
+
         /// <summary>
         /// Gets all downloads that have timed out.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Download> DownloadsTimedOut()
         {
-            return base.Items.Where(i => i.TimedOut == true);
+            return this._downloads.Where(i => i.TimedOut == true);
         }
 
-        XmlSchema IXmlSerializable.GetSchema()
+        public IEnumerator<Download> GetEnumerator()
         {
-            return null;
+            return this._downloads.GetEnumerator();
         }
 
-        void IXmlSerializable.ReadXml(XmlReader reader)
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            base.Clear();
-            
-            int timeout = 0;
-            if(int.TryParse(reader["TimeOut"], out timeout))
-            {
-                _timeout = timeout;
-            }
-
-            int refreshRate = 0;
-            if (int.TryParse(reader["RefreshRate"], out timeout))
-            {
-                _refreshRate = refreshRate;
-            }
-
-            reader.MoveToContent(); 
-            XPathNavigator n = new XPathDocument(reader.ReadSubtree()).CreateNavigator();
-            XPathNodeIterator nodes = n.Select("//Download");
-            XmlSerializer x = new XmlSerializer(typeof(Download));
-
-            while (nodes.MoveNext())
-            {
-                using (TextReader stream = new StringReader(nodes.Current.OuterXml))
-                {
-                    object o = x.Deserialize(stream);
-                    if (o is Download) base.Add((Download)o);
-                }
-            }
-        }
-
-        void IXmlSerializable.WriteXml(XmlWriter writer)
-        {
-            writer.WriteAttributeString("TimeOut", _timeout.ToString());
-            writer.WriteAttributeString("RefreshRate", _refreshRate.ToString());
-
-            foreach(Download download in base.Items)
-            {
-                writer.WriteStartElement("Download");
-                {
-                    writer.WriteAttributeString("Name", download.Name);
-                    writer.WriteAttributeString("Description", download.Description);
-
-                    writer.WriteElementString("DownloadUrl", download.DownloadUrl);
-                    writer.WriteElementString("DestinationPath", download.DestinationPath);
-
-                    if (!string.IsNullOrEmpty(download.ExtractionPath))
-                    {
-                        writer.WriteElementString("ExtractionPath", download.ExtractionPath);
-                    }
-                    
-                }
-                writer.WriteEndElement();
-            }
+            return this._downloads.GetEnumerator();
         }
     }
 }

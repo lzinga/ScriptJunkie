@@ -30,7 +30,7 @@ namespace ScriptJunkie
 #if (DEBUG)
             // Example of programatically added arguments.
             //ServiceManager.Services.ArgumentService.AddArgument(ArgumentService.XmlTemplatePath, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\ScriptJunkie\\Template.xml");
-            ServiceManager.Services.ArgumentService.AddArgument(ArgumentService.XmlPath, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\ScriptJunkie\\Template.xml");
+            //ServiceManager.Services.ArgumentService.AddArgument(ArgumentService.XmlPath, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\ScriptJunkie\\Template.xml");
 #endif
 
             // Start Script Junkie.

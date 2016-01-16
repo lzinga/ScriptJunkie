@@ -11,15 +11,45 @@ namespace ScriptJunkie.Services
 {
     [Serializable]
     [XmlRoot(ElementName = "Arguments")]
-    public class ArgumentCollection : Collection<Argument>
+    public class ArgumentCollection : IEnumerable<Argument>
     {
+        private List<Argument> _arguments = new List<Argument>();
+
+        public int Count
+        {
+            get
+            {
+                return this._arguments.Count;
+            }
+        }
+
+        public IEnumerator<Argument> GetEnumerator()
+        {
+            return this._arguments.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this._arguments.GetEnumerator();
+        }
+
+        public void Add(Argument argument)
+        {
+            this._arguments.Add(argument);
+        }
+
+        public void Remove(Argument argument)
+        {
+            this._arguments.Remove(argument);
+        }
+
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
 
-            if (base.Items != null)
+            if (this._arguments != null)
             {
-                foreach (Argument arg in base.Items)
+                foreach (Argument arg in this._arguments)
                 {
                     builder.Append(" ");
                     builder.Append(arg.ToString());
